@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-//import { firebase } from '../firebase'; // Importa la configuración de Firebase
-
+import { appFirebase } from '../firebaseConfig'; // Importa la configuración de Firebase
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+const auth = getAuth(appFirebase);
 // Esquema de validación con Yup para el registro
 const validationSchema = Yup.object({
   email: Yup.string().email('Correo inválido').required('El correo es obligatorio'),
@@ -18,7 +19,7 @@ export default function SignUpScreen({ navigation }) {
     const { email, password } = values;
 
     try {
-      //await firebase.auth().createUserWithEmailAndPassword(email, password); // Crea el usuario en Firebase
+      await createUserWithEmailAndPassword(auth, email, password); // Crea el usuario en Firebase
       navigation.navigate('Login');  // Si el registro es exitoso, redirige a la pantalla de Login
     } catch (error) {
       setError(error.message);  // Muestra el error si algo sale mal
