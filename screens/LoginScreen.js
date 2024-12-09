@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }) {
 
         try {
             await signInWithEmailAndPassword(auth, email, password); // Intenta hacer login con Firebase
-            navigation.navigate('Home'); // Si el login es exitoso, navega a la pantalla principal
+            navigation.navigate('Task'); // Si el login es exitoso, navega a la pantalla principal
         } catch (error) {
             setError(error.message); // Si hay un error (correo/contraseña incorrectos), muestra el error
         }

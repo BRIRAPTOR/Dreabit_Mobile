@@ -1,7 +1,26 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ImageBackground } from "react-native";
+import React, {useState} from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+    Image,
+    ImageBackground,
+    TextInput,
+    Modal
+} from "react-native";
 
-export default function App() {
+export default function App({ navigation }) {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [taskName, setTaskName] = useState("");
+    const [dueDate, setDueDate] = useState("");
+
+    const handleSaveTask = () => {
+        console.log("Tarea guardada:", taskName, dueDate);
+        setModalVisible(false);  // Cierra el modal después de guardar
+        // Aquí puedes agregar la lógica para guardar la tarea en un estado o base de datos
+    };
     return (
         <ImageBackground
             source={require("../images/bg.png")} // Cambia esta ruta por la de tu imagen de fondo
@@ -17,7 +36,7 @@ export default function App() {
                             style={styles.icon}
                         />
                         <Text style={styles.date}>viernes{'\n'}8 noviembre</Text>
-                        <TouchableOpacity style={styles.calendar}>
+                        <TouchableOpacity style={styles.calendar} onPress={() => navigation.navigate('Event')}>
                             <Text style={styles.calendarText}>📅</Text>
                         </TouchableOpacity>
                         <View style={styles.profile}>
@@ -53,7 +72,7 @@ export default function App() {
 
                     {/* Botón flotante */}
                     <TouchableOpacity style={styles.addButton}>
-                        <Text style={styles.addButtonText}>+</Text>
+                        <Text style={styles.addButtonText} onPress={() => setModalVisible(true)}>+</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -69,6 +88,46 @@ export default function App() {
                 <TouchableOpacity>
                     <Text style={styles.navIcon}>🎯</Text>
                 </TouchableOpacity>
+            </View>
+            <View>
+
+                {/* Modal para agregar tarea */}
+                <Modal
+                    visible={modalVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Agregar tarea</Text>
+
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Nombre de la tarea"
+                                value={taskName}
+                                onChangeText={setTaskName}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Fecha de entrega"
+                                value={dueDate}
+                                onChangeText={setDueDate}
+                            />
+
+                            <TouchableOpacity style={styles.saveButton} onPress={handleSaveTask}>
+                                <Text style={styles.saveButtonText}>Guardar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={styles.cancelButtonText}>Cancelar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </ImageBackground>
     );
@@ -201,4 +260,58 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 24,
     },
+    // Estilos para el modal
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",  // Fondo oscuro translúcido
+    },
+    modalContainer: {
+        width: "80%",
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        padding: 20,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 20,
+        marginBottom: 20,
+        color: "#333",
+        fontWeight: "bold",
+    },
+    input: {
+        width: "100%",
+        height: 50,
+        backgroundColor: "#f0f0f0",
+        marginBottom: 15,
+        paddingLeft: 15,
+        borderRadius: 5,
+        color: "#333",
+    },
+    saveButton: {
+        backgroundColor: "#00bf93",
+        width: "100%",
+        padding: 15,
+        borderRadius: 5,
+        alignItems: "center",
+        marginBottom: 10,
+    },
+    saveButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    cancelButton: {
+        backgroundColor: "#f44336",
+        width: "100%",
+        padding: 15,
+        borderRadius: 5,
+        alignItems: "center",
+    },
+    cancelButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    }
 });
